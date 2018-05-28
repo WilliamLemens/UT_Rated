@@ -9,15 +9,15 @@ ratingHead.innerHTML = "Rating"; // TODO add in a question field that opens a wi
 
 // Add cells to body for ratings
 var trs = tbl.tBodies[0].children;
-var field = "hm"; // temp val
+var c_num = "tmp"; // temp val
 for (i = 0; i < trs.length; i++) {
 	if (trs[i].children[0].className == "course_header") { // header
-		field = trs[i].children[0].innerHTML.substr(4,3); // gets the field this course is in
+		c_num = trs[i].children[0].innerHTML.substr(4,8); // gets the course number
 		continue;
 	}
 	var tds = trs[i].children;
 	var newtd = document.createElement("td");
 	trs[i].insertBefore(newtd, trs[i].children[5]);
-	newtd.innerHTML = field;
+	newtd.innerHTML = c_num;
 }
 //http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&queryoption=HEADER&facetSearch=true&query=gheith&sid=1255&dept=Computer%20Science
