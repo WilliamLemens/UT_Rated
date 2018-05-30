@@ -1,23 +1,22 @@
-var tbl = document.getElementsByClassName("rwd-table")[0];
+function getProfLinkHTML(name) {
+	// "<a href="https://utdirect.utexas.edu/ctl/ecis/results/search.WBX?s_in_search_name="+name+"\"> "+name+" </a>";
+	name = caseName(name);
+	return "<a href=\""+baseURL+prof+name+"\"> "+name+" </a>";
+}
 
-// Insert "Rating" to thead
-var th = tbl.tHead.children[0];
-var ratingHead = document.createElement("th");
-th.insertBefore(ratingHead, th.children[5]);
-ratingHead.setAttribute("scope", "col");
-ratingHead.innerHTML = "Rating"; // TODO add in a question field that opens a window describing extension
+function caseName(name) {
+	return name.charAt(0)
+		+ name.substr(1, name.length-2).toLowerCase()
+		+ name.charAt(name.length-1);
+}
+
+var baseURL = "https://utdirect.utexas.edu/ctl/ecis/results/search.WBX";
+var prof = "?s_in_search_name=";
+var tbl = document.getElementsByClassName("rwd-table")[0];
 
 // Add cells to body for ratings
 var trs = tbl.tBodies[0].children;
-var c_num = "tmp"; // temp val
-for (i = 0; i < trs.length; i++) {
-	if (trs[i].children[0].className == "course_header") { // header
-		c_num = trs[i].children[0].innerHTML.substr(4,8); // gets the course number
-		continue;
-	}
-	var tds = trs[i].children;
-	var newtd = document.createElement("td");
-	trs[i].insertBefore(newtd, trs[i].children[5]);
-	newtd.innerHTML = c_num;
-}
-//http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&queryoption=HEADER&facetSearch=true&query=gheith&sid=1255&dept=Computer%20Science
+var c_num = []; // [Field, Number]
+for (i = 0; i < trs.length; i++)
+	if (trs[i].children[0].className != "course_header")
+		trs[i].children[4].innerHTML = getProfLinkHTML(trs[i].children[4].innerHTML);
