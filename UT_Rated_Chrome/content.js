@@ -1,28 +1,12 @@
-/*function makeXMLHttpRequest(url) {
-	var request = new XMLHttpRequest();
-	request.open("GET", url);
-	request.send();
+function getCourseLinkHTML(c_num, text) {
+	// "<a href="https://utdirect.utexas.edu/ctl/ecis/results/search.WBX?s_in_search_course_dept="+c_num[0]+", ?s_in_search_course_num="+c_num[1]+"\"> " + text+" </a>"
+	return "<a href=\""+baseURL+"?search_type=course"+dept+c_num[0]+", "+course+c_num[1]+"\"> " + text+" </a>";
+}
 
-	if (request.status = 200)
-		return request.responseText;
-}*/
-
-function search (name, c_num) {
+function getProfLinkHTML(name) {
+	// "<a href="https://utdirect.utexas.edu/ctl/ecis/results/search.WBX?s_in_search_name="+name+"\"> "+name+" </a>";
 	name = caseName(name);
-
-	/*console.log("Getting prof info for "+name+", and "+c_num[0]+" "+c_num[1]+".");
-	var request = makeXMLHttpRequest(baseURL+name);
-
-	if (request === 'undefined')
-		return "bad search request";
-
-	console.log("\""+request+"\"");
-
-	return request;*/
-
-	return "<a href=\""+baseURL+name+"\">"
-		+ "Teacher: " + name
-		+ ", Course: " + c_num[0]+"-"+c_num[1]+"</a>";
+	return "<a href=\""+baseURL+prof+name+"\"> "+name+" </a>";
 }
 
 function getCourseNum(c_num) {
@@ -39,26 +23,18 @@ function caseName(name) {
 		+ name.charAt(name.length-1);
 }
 
-var baseURL = "https://utdirect.utexas.edu/ctl/ecis/results/search.WBX?s_in_search_name=";
+var baseURL = "https://utdirect.utexas.edu/ctl/ecis/results/search.WBX";
+var prof = "?s_in_search_name=";
+var dept = "?s_in_search_course_dept=";
+var course = "?s_in_search_course_num=";
 var tbl = document.getElementsByClassName("rwd-table")[0];
-
-// Insert "Rating" to thead
-var th = tbl.tHead.children[0];
-var ratingHead = document.createElement("th");
-th.insertBefore(ratingHead, th.children[5]);
-ratingHead.setAttribute("scope", "col");
-ratingHead.innerHTML = "Rating"; // TODO add in a question field that opens a window describing extension
 
 // Add cells to body for ratings
 var trs = tbl.tBodies[0].children;
 var c_num = []; // [Field, Number]
-for (i = 0; i < trs.length; i++) {
+for (i = 0; i < trs.length; i++)
 	if (trs[i].children[0].className == "course_header") { // header
 		c_num = getCourseNum(trs[i].children[0].innerHTML.substr(4)); // gets the course number
-		continue;
+		trs[i].children[0].innerHTML = getCourseLinkHTML(c_num, trs[i].children[0].innerHTML);
 	}
-	var tds = trs[i].children;
-	var newtd = document.createElement("td");
-	trs[i].insertBefore(newtd, trs[i].children[5]);
-	newtd.innerHTML = search(trs[i].children[4].innerHTML, c_num);
-}
+	else trs[i].children[4].innerHTML = getProfLinkHTML(trs[i].children[4].innerHTML);
